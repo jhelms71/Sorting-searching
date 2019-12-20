@@ -1,0 +1,324 @@
+/*
+ * @author Jonathan Helms
+ * @version November 20, 2019
+ * 
+ * Description: Allow user to go through menu to use different sorting and searching methods, and manipulate the arrays created in those choices
+ * 
+ * Pseudocode:
+ * 1. import the given arrays for titles, IDs, prices and quantity
+ * 2. display menu for choices, linear search, binary search, selection sort, and bubble sort
+ * 3. linear search
+ * 		-use display method to show the arrays for the books
+ * 		-user enters id of book they want and quantity
+ * 		-check if id exists and quantity can be subtracted
+ * 		-use currentTimeMills to calculate execution time
+ * 		-call linear search to search through arrays
+ * 4. binary search 
+ * 		-use display method to show the arrays for the books
+ * 		-user enters id of book they want and quantity
+ * 		-check if id exists and quantity can be subtracted
+ * 		-use currentTimeMills to calculate execution time
+ * 		-call linear search to search through arrays
+ * 5. selection sort
+ * 		-create an int array with a length of 10
+ * 		-for loop to add random numbers from 1 to 500 to the array
+ * 		-display the current, unsorted array
+ * 		-call selectionSort method and display sorted array
+ * 		-display execution time with currentTimeMills
+ * 6. bubble sort
+ * 		-create an int array with a length of 10
+ * 		-for loop to add random numbers from 1 to 500 to the array
+ * 		-display the current, unsorted array
+ * 		-call bubbleSort method and display sorted array
+ * 		-display execution time with currentTimeMills
+ */
+import java.util.Scanner;
+import java.util.*;
+
+public class Assign_3_2 {
+
+	public static void main(String[] args) throws Exception {
+		Scanner input = new Scanner(System.in);
+		boolean yes = true;
+
+		// import the given arrays
+		String[] bookTitle = { "Starting out with Java", "Java Programming", "Software Structures",
+				"Design and Analysis of Algorithms", "Computer Graphics", "Artificial Intelligence: A Modern Approach",
+				"Probability and Statistics", "Cognitive Science", "Modern Information Retrieval",
+				"Speech and Language Processing" };
+
+		int[] bookID = { 1101, 1211, 1333, 1456, 1567, 1642, 1699, 1755, 1800, 1999 };
+		double[] bookPrice = { 102.32, 43.25, 54.00, 67.32, 105.00, 113.22, 20.00, 42.25, 32.11, 123.75 };
+		int[] quantityAvailable = { 11, 12, 13, 12, 14, 12, 19, 15, 18, 19 };
+
+		// do while loop to run menu in the beginning and continue it until user chooses
+		// to end
+		do {
+			System.out.println("\n1. Linear Search" + "\n2. Binary Search" + "\n3. Bubble Sort" + "\n4. Selection Sort"
+					+ "\n5. Quit");
+			System.out.print("Please enter a number between 1-5: ");
+			int choice = input.nextInt();
+
+			if (choice == 1) {
+				System.out.println("\n**** LINEAR SEARCH ****");
+				// call display method to show, book IDs, titles and prices
+				System.out.println(display(bookID, bookTitle, bookPrice, quantityAvailable));
+
+				// user choose ID and number of books
+				System.out.print("\nPlease enter the book ID you wish to purchase from the list above: ");
+				int id = input.nextInt();
+
+				System.out.print("How many copies you wish to purchase: ");
+				int numb = input.nextInt();
+
+				// loop to check if ID exist
+
+				int index = find(bookID, id);
+				
+				// loop to check if quantity user wants is available
+				for (int i = 0; i < quantityAvailable.length; i++) {
+					
+					if (numb <= quantityAvailable[i]) {
+						quantityAvailable[index] = quantityAvailable[index] - numb;
+
+						// calculate time
+						long start = System.currentTimeMillis();
+
+						// call linearSearch to look through the arrays
+						linearSearch(bookID, id, bookTitle, bookPrice, numb);
+						for (int j = 0; j < 5; j++) {
+							Thread.sleep(60);
+						}
+						// display execution times
+						long end = System.currentTimeMillis();
+						float sec = (end - start) / 1000F;
+						System.out.println("\n\t\t\tExecution of this function took: " + sec + " seconds");
+						break;
+
+					} else {
+						System.out.print("There are not enough books available.");
+						break;
+					}
+				}
+
+			} else if (choice == 2) {
+				System.out.println("\n**** BINARY SEARCH ****");
+				// call display method to show, book IDs, titles and prices
+				System.out.println(display(bookID, bookTitle, bookPrice, quantityAvailable));
+
+				// user choose ID and number of books
+				System.out.print("\nPlease enter the book ID you wish to purchase from the list above: ");
+				int id = input.nextInt();
+
+				System.out.print("How many copies you wish to purchase: ");
+				int numb = input.nextInt();
+
+				// loop to check if ID exist
+				int index = find(bookID, id);
+				
+				// loop to check if quantity user wants is available
+				for (int i = 0; i < quantityAvailable.length; i++) {
+					if (numb <= quantityAvailable[i]) {
+						quantityAvailable[index] = quantityAvailable[index] - numb;
+						// calculate time
+						long start = System.currentTimeMillis();
+
+						// call binarySearch to look through the arrays
+						binarySearch(bookID, id, bookTitle, bookPrice, numb);
+
+						for (int j = 0; j < 5; j++) {
+							Thread.sleep(60);
+						}
+						// display execution times
+						long end = System.currentTimeMillis();
+						float sec = (end - start) / 1000F;
+						System.out.println("\n\t\t\tExecution of this function took: " + sec + " seconds");
+						break;
+
+					} else {
+						System.out.print("There are not enough books available.");
+						break;
+					}
+				}
+
+			} else if (choice == 3) {
+				// create array with length of 10, and loop to add numbers 1 to 500
+				int[] random = new int[10];
+				for (int i = 0; i < random.length; i++) {
+					random[i] = (int) (Math.random() * 500) + 1;
+				}
+				System.out.print("The unsorted array is: ");
+
+				// display unsorted array
+				for (int j = 0; j < random.length; j++) {
+					System.out.print(random[j] + "\t");
+				}
+				System.out.println();
+				System.out.print("The sorted array is: ");
+
+				// calculate execution time
+				long start = System.currentTimeMillis();
+
+				// call selectionSort to sort array and display it
+				selectionSort(random);
+
+				// display execution times
+				for (int j = 0; j < 5; j++) {
+					Thread.sleep(60);
+				}
+				long end = System.currentTimeMillis();
+				float sec = (end - start) / 1000F;
+				System.out.println("\n\t\t\tExecution of this function took: " + sec + " seconds");
+
+			} else if (choice == 4) {
+				// create array with length of 10, and loop to add numbers 1 to 500
+				int[] random = new int[10];
+				for (int i = 0; i < random.length; i++) {
+					random[i] = (int) (Math.random() * 500) + 1;
+				}
+				System.out.print("The unsorted array is: ");
+
+				// display unsorted array
+				for (int j = 0; j < random.length; j++) {
+					System.out.print(random[j] + "\t");
+				}
+				System.out.println();
+				System.out.print("The sorted array is: ");
+
+				// calculate execution time
+				long start = System.currentTimeMillis();
+
+				// call bubbleSort to sort array and display it
+				bubbleSort(random);
+
+				// display execution times
+				for (int j = 0; j < 5; j++) {
+					Thread.sleep(60);
+				}
+				long end = System.currentTimeMillis();
+				float sec = (end - start) / 1000F;
+				System.out.println("\n\t\t\tExecution of this function took: " + sec + " seconds");
+
+			} else if (choice == 5) {
+				// end do/while loop
+				System.out.println("Goodbye.");
+				yes = false;
+			} else {
+				System.out.println("You must enter one of the choices given. ");
+			}
+		} while (yes);
+	}
+
+	public static void linearSearch(int[] list, int key, String titles[], double[] prices, int amount) {
+		// loop through list to find the key
+		for (int i = 0; i < list.length; i++) {
+			if (key == list[i]) {
+				// if found, display this
+				System.out.print("Book ID: " + list[i] + "\nBook Title: " + titles[i] + "\nNumber of books bought: "
+						+ amount + "\nTotal Cost: " + (prices[i] * 2));
+			}
+		}
+	}
+
+	public static void binarySearch(int[] list, int key, String titles[], double[] prices, int amount) {
+		int low = 0;
+		int high = list.length - 1;
+
+		// loop as long as high is larger than low
+		while (high >= low) {// compare high, low and mid
+			int mid = (low + high) / 2;
+			if (key < list[mid]) {
+				high = mid - 1;
+
+			}
+			// once key is found, display this
+			else if (key == list[mid]) {
+				System.out.println("Book ID: " + list[mid] + "\nBook Title: " + titles[mid]
+						+ "\nNumber of books bought: " + amount + "\nTotal Cost: " + (prices[mid] * 2));
+				break;
+			} else {
+				low = mid + 1;
+			}
+		}
+	}
+
+	public static void selectionSort(int[] list) {
+		// loop to compare which number is larger than the other
+		for (int i = 0; i < list.length - 1; i++) {
+			// compare the first number seen to all the others
+			int currentMin = list[i];
+			int currentMinIndex = i;
+
+			for (int j = i + 1; j < list.length; j++) {
+				if (currentMin > list[j]) {
+					currentMin = list[j];
+					currentMinIndex = j;
+				}
+			}
+			if (currentMinIndex != i) {
+				list[currentMinIndex] = list[i];
+				list[i] = currentMin;
+			}
+		} // loop to display the integers
+		for (int j = 0; j < list.length; j++) {
+			System.out.print(list[j] + "\t");
+			if (j == 0) {
+				System.out.print("\t");
+			}
+		}
+
+	}
+
+	public static void bubbleSort(int[] list) {
+		boolean needNextPass = true;
+
+		// loop through to rearrange integers in order
+		for (int k = 1; k < list.length && needNextPass; k++) {
+			needNextPass = false;
+			// loop to compare each item and the item after it
+			for (int i = 0; i < list.length - k; i++) {
+				if (list[i] > list[i + 1]) {
+					int temp = list[i];
+					list[i] = list[i + 1];
+					list[i + 1] = temp;
+
+					needNextPass = true;
+				}
+			}
+		} // loop to display all the integers
+		for (int j = 0; j < list.length; j++) {
+			System.out.print(list[j] + "\t");
+			if (j == 0) {
+				System.out.print("\t");
+			}
+		}
+
+	}
+
+	public static String display(int bookID[], String titles[], double cost[], int quantity[]) {
+		// add all these strings together for tabular display of items
+		String headings = "\nBook ID\t\t\tTitle\t\t\t\t\t\t\tCost\t\t\t\tQuantity";
+		String line0 = "\n" + bookID[0] + "\t\t\t" + titles[0] + "\t\t\t\t\t" + cost[0] + "\t\t\t\t" + quantity[0];
+		String line1 = "\n" + bookID[1] + "\t\t\t" + titles[1] + "\t\t\t\t\t" + cost[1] + "\t\t\t\t" + quantity[1];
+		String line2 = "\n" + bookID[2] + "\t\t\t" + titles[2] + "\t\t\t\t\t" + cost[2] + "\t\t\t\t" + quantity[2];
+		String line3 = "\n" + bookID[3] + "\t\t\t" + titles[3] + "\t\t\t" + cost[3] + "\t\t\t\t" + quantity[3];
+		String line4 = "\n" + bookID[4] + "\t\t\t" + titles[4] + "\t\t\t\t\t" + cost[4] + "\t\t\t\t" + quantity[4];
+		String line5 = "\n" + bookID[5] + "\t\t\t" + titles[5] + "\t\t" + cost[5] + "\t\t\t\t" + quantity[5];
+		String line6 = "\n" + bookID[6] + "\t\t\t" + titles[6] + "\t\t\t\t" + cost[6] + "\t\t\t\t" + quantity[6];
+		String line7 = "\n" + bookID[7] + "\t\t\t" + titles[7] + "\t\t\t\t\t" + cost[7] + "\t\t\t\t" + quantity[7];
+		String line8 = "\n" + bookID[8] + "\t\t\t" + titles[8] + "\t\t\t\t" + cost[8] + "\t\t\t\t" + quantity[8];
+		String line9 = "\n" + bookID[9] + "\t\t\t" + titles[9] + "\t\t\t\t" + cost[9] + "\t\t\t\t" + quantity[9];
+		String all = headings + line0 + line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9;
+		return all;
+	}
+	public static int find(int[] a, int target)
+	{
+		for (int i = 0; i < a.length; i++) {
+			if (a[i] == target) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+}
